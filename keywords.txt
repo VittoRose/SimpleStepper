@@ -1,0 +1,26 @@
+# SimpleStepper Library data types
+STEPPER	KEYWORD1
+
+
+# Keypad Library constants
+CW	LITERAL1
+CCW	LITERAL1
+
+# Keypad Library methods & functions
+setSpeed	KEYWORD2
+getSpeed	KEYWORD2
+doStep	KEYWORD2
+setZero	KEYWORD2
+rotateTo	KEYWORD2
+increaseAngle	KEYWORD2
+reduceAngle KEYWORD2
+getPosition	KEYWORD2
+
+# this is a macro that converts 2d arrays to pointers
+#makeKeymap	KEYWORD2
+
+# List of objects created in the example sketches.
+#kpd	KEYWORD3
+#keypad	KEYWORD3
+#kbrd	KEYWORD3
+#keyboard	KEYWORD3
