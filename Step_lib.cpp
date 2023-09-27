@@ -49,25 +49,19 @@ void STEPPER::rotateTo(int target) {
     step = 0;
   }
 
-  if(accel == false){
+  if(start_accel == false){
     for (i = 0; i < step; i++) {
       doStep();
     }
   }
 
-  if(accel == true){
-    uint8_t accelstep = (step/4 < 100) ?  step/4 : 100;
-
-    Serial.print("Numero di passi in accelerazione");
-    Serial.println(accelstep);
+  if(start_accel == true){
+    uint8_t accelstep = (step/4 < startAccelerationEnd) ?  step/4 : startAccelerationEnd;
 
     while(i < accelstep){
-      doAcceleration(3*delms - round(2.0/accelstep)*i);   // linear acceleration from 3*delms to delms
-      Serial.print("Delay: ");
-      Serial.println((accelstep - i));
+      doAcceleration(startAcceleration*delms - round((startAcceleration - 1) / accelstep)*i);   // linear acceleration from 3*delms to delms
       i++;
     }
-    Serial.println("Fuori dal loop di accelerazione");
     while(i <= step){
       doStep();
       i++;
@@ -90,9 +84,9 @@ void STEPPER::reduceAngle(int _angle) {
   rotateTo(getPosition() - _angle);
 }
 
-void STEPPER::Acceleration(bool condition){
-  if (condition == true) accel = true;
-  else accel = false;
+void STEPPER::Acceleration(bool START_ACCEL, bool END_ACCEL){
+  start_accel = (START_ACCEL == true) ? true : false;
+  end_accel = (END_ACCEL == true) ? true : false;
 }
 
 void STEPPER::doAcceleration(uint16_t del){

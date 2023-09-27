@@ -17,11 +17,18 @@ private:
   float tau;
   long position;
   uint16_t delms;
-  bool accel;
+  bool start_accel;
+  bool end_accel;
 
   void doAcceleration(uint16_t del);
 
 public:
+
+  uint8_t startAcceleration = 2;
+  uint16_t startAccelerationEnd = 100;
+
+  uint8_t endAcceleration = 3;
+  uint16_t endAccelerationEnd = 100;
 
   STEPPER(uint8_t STEP, uint8_t DIR, uint8_t NSTEP) {
     stepPIN = STEP;
@@ -65,7 +72,7 @@ public:
 
   int getPosition();
 
-  void Acceleration(bool condition);
+  void Acceleration(bool START_ACCEL, bool END_ACCEL);
 };
 
 #endif
