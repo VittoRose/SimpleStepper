@@ -49,9 +49,31 @@ void STEPPER::rotateTo(int target) {
     step = 0;
   }
 
-  for (i = 0; i < step; i++) {
-    doStep();
+  if(accel == false){
+    for (i = 0; i < step; i++) {
+      doStep();
+    }
   }
+
+  if(accel == true){
+    uint8_t accelstep = (step/4 < 100) ?  step/4 : 100;
+
+    Serial.print("Numero di passi in accelerazione");
+    Serial.println(accelstep);
+
+    while(i < accelstep){
+      doAcceleration(3*delms - round(2.0/accelstep)*i);   // linear acceleration from 3*delms to delms
+      Serial.print("Delay: ");
+      Serial.println((accelstep - i));
+      i++;
+    }
+    Serial.println("Fuori dal loop di accelerazione");
+    while(i <= step){
+      doStep();
+      i++;
+    }
+  }
+
 
   position = target;
 }
@@ -66,4 +88,16 @@ void STEPPER::increaseAngle(int _angle) {
 
 void STEPPER::reduceAngle(int _angle) {
   rotateTo(getPosition() - _angle);
+}
+
+void STEPPER::Acceleration(bool condition){
+  if (condition == true) accel = true;
+  else accel = false;
+}
+
+void STEPPER::doAcceleration(uint16_t del){
+  
+  digitalWrite(stepPIN, HIGH);
+  delayMicroseconds(del);
+  digitalWrite(stepPIN, LOW);
 }

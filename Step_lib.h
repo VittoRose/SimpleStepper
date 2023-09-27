@@ -16,11 +16,13 @@ private:
   uint8_t N_STEP;
   float tau;
   long position;
-  uint8_t del;
+  uint16_t delms;
+  bool accel;
+
+  void doAcceleration(uint16_t del);
 
 public:
 
-  uint16_t delms;
   STEPPER(uint8_t STEP, uint8_t DIR, uint8_t NSTEP) {
     stepPIN = STEP;
     dirPIN = DIR;
@@ -62,6 +64,8 @@ public:
   void reduceAngle(int _angle);
 
   int getPosition();
+
+  void Acceleration(bool condition);
 };
 
 #endif
