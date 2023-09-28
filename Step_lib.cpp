@@ -49,17 +49,19 @@ void STEPPER::rotateTo(int target) {
     step = 0;
   }
 
-  if(start_accel == false){
+  // no acceleration
+  if(start_accel == false && end_accel == false){
     for (i = 0; i < step; i++) {
       doStep();
     }
   }
 
-  if(start_accel == true){
+  // only start acceleration
+  if(start_accel == true && end_accel == false){
     uint8_t accelstep = (step/4 < startAccelerationEnd) ?  step/4 : startAccelerationEnd;
 
     while(i < accelstep){
-      doAcceleration(startAcceleration*delms - round((startAcceleration - 1) / accelstep)*i);   // linear acceleration from 3*delms to delms
+      doAcceleration(startAcceleration*delms - round((startAcceleration - 1) / accelstep)*i);   // linear acceleration 
       i++;
     }
     while(i <= step){
@@ -68,6 +70,44 @@ void STEPPER::rotateTo(int target) {
     }
   }
 
+  // only end acceleration
+  if(start_accel == false && end_accel == true){
+    uint8_t accelstep = (step/4 < endAccelerationEnd) ?  step/4 : endAccelerationEnd;
+
+
+    while(i < step - accelstep){
+      doStep();
+      i++;
+    }
+    while(i <= step){
+      doAcceleration(delms - round((endAcceleration - 1) / step - accelstep)*i);   // linear acceleration 
+      i++;
+    }
+  }
+
+  //both acceleration
+  if(start_accel == true && end_accel == true){
+    uint8_t accelstep_start = (step/4 < startAccelerationEnd) ?  step/4 : startAccelerationEnd;
+    uint8_t accelstep_end = (step/4 < endAccelerationEnd) ?  step/4 : endAccelerationEnd;
+    
+    while(i < accelstep_start){
+      doAcceleration(startAcceleration*delms - round((startAcceleration - 1) / accelstep_start)*i);   // linear acceleration 
+      i++;
+      Serial.println(i);
+    }
+
+    while(i < step - accelstep_end){
+      doStep();
+      i++;
+      Serial.println(i);
+    }
+
+    while(i <= step){
+      doAcceleration(delms - round((endAcceleration - 1) / step - accelstep_end)*i);   // linear acceleration 
+      i++;
+      Serial.println(i);
+    }
+  }
 
   position = target;
 }
